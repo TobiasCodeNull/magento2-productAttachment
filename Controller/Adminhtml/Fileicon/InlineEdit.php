@@ -33,22 +33,16 @@ class InlineEdit extends \Magento\Backend\App\Action
 
     protected $jsonFactory;
 
-    /** @var \Prince\Productattach\Model\FileiconFactory */
-    private $fileiconFactory;
-
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
-     * @param \Prince\Productattach\Model\FileiconFactory $fileiconFactory
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
-        \Prince\Productattach\Model\FileiconFactory $fileiconFactory
+        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
-        $this->fileiconFactory = $fileiconFactory;
     }
 
     /**
@@ -71,7 +65,7 @@ class InlineEdit extends \Magento\Backend\App\Action
             } else {
                 foreach (array_keys($postItems) as $modelid) {
                     /** @var \Prince\Productattach\Model\Fileicon $model */
-                    $model = $this->fileiconFactory->create()->load($modelid);
+                    $model = $this->_objectManager->create('Prince\Productattach\Model\Fileicon')->load($modelid);
                     try {
                         $model->setData(array_merge($model->getData(), $postItems[$modelid]));
                         $model->save();

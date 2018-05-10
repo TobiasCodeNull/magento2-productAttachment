@@ -42,7 +42,7 @@ class Store extends Column
     /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param \Magento\Store\Model\StoreManagerInterface $systemStore
+     * @param ObjectManagerInterface $objectManager
      * @param array $components
      * @param array $data
      */

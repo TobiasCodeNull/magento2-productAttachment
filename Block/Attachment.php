@@ -37,41 +37,46 @@ class Attachment extends \Magento\Framework\View\Element\Template
     /**
      * Productattach collection
      *
-     * @var \Prince\Productattach\Model\ResourceModel\Productattach\Collection
+     * @var Prince\Productattach\Model\ResourceModel\Productattach\Collection
      */
     private $productattachCollection = null;
     
     /**
      * Productattach factory
      *
-     * @var \Prince\Productattach\Model\ProductattachFactory
+     * @var Prince\Productattach\Model\ProductattachFactory
      */
     private $productattachCollectionFactory;
 
     /**
      * Fileicon factory
      *
-     * @var \Prince\Productattach\Model\FileiconFactory
+     * @var Prince\Productattach\Model\FileiconFactory
      */
     private $fileiconCollectionFactory;
     
     /**
-     * @var \Prince\Productattach\Helper\Data
+     * @var Prince\Productattach\Helper\Data
      */
     private $dataHelper;
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @var Magento\Customer\Model\Session
      */
     private $customerSession;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var Magento\Framework\App\Config\ScopeConfigInterface
      */
     private $scopeConfig;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Magento\Framework\Registry
      */
     private $registry;
     
@@ -80,6 +85,7 @@ class Attachment extends \Magento\Framework\View\Element\Template
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Prince\Productattach\Model\ResourceModel\Productattach\CollectionFactory $productattachCollectionFactory
      * @param \Prince\Productattach\Model\ResourceModel\Fileicon\CollectionFactory $fileiconCollectionFactory
+     * @param \Magento\Framework\ObjectManagerInterface $objectmanager
      * @param \Prince\Productattach\Helper\Data $dataHelper
      * @param \Magento\Framework\Registry $registry
      * @param array $data
@@ -89,6 +95,7 @@ class Attachment extends \Magento\Framework\View\Element\Template
         \Magento\Customer\Model\Session $customerSession,
         \Prince\Productattach\Model\ResourceModel\Productattach\CollectionFactory $productattachCollectionFactory,
         \Prince\Productattach\Model\ResourceModel\Fileicon\CollectionFactory $fileiconCollectionFactory,
+        \Magento\Framework\ObjectManagerInterface $objectmanager,
         \Prince\Productattach\Helper\Data $dataHelper,
         \Magento\Framework\Registry $registry,
         array $data = []
@@ -96,6 +103,7 @@ class Attachment extends \Magento\Framework\View\Element\Template
         $this->customerSession =$customerSession;
         $this->productattachCollectionFactory = $productattachCollectionFactory;
         $this->fileiconCollectionFactory = $fileiconCollectionFactory;
+        $this->objectManager = $objectmanager;
         $this->dataHelper = $dataHelper;
         $this->scopeConfig = $context->getScopeConfig();
         $this->registry = $registry;
@@ -116,19 +124,18 @@ class Attachment extends \Magento\Framework\View\Element\Template
     /**
      * Retrieve productattach collection
      *
-     * @return \Prince\Productattach\Model\ResourceModel\Productattach\Collection
+     * @return Prince\Productattach\Model\ResourceModel\Productattach\Collection
      */
     public function getCollection()
     {
         $collection = $this->productattachCollectionFactory->create();
         return $collection;
     }
-
+    
     /**
      * Filter productattach collection by product Id
      *
-     * @param $productId
-     * @return \Prince\Productattach\Model\ResourceModel\Productattach\Collection
+     * @return collection
      */
     public function getAttachment($productId)
     {
@@ -188,23 +195,20 @@ class Attachment extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Retrieve file icon image
+     * Retrive file icon image
      *
-     * @param string $fileExt
      * @return string
      */
     public function getFileIcon($fileExt)
     {
-        $fileExt = \strtolower($fileExt);
-
         if ($fileExt) {
             $iconExt = $this->getIconExt($fileExt);
-            if ($iconExt) {
+            if($iconExt) {
                 $mediaUrl = $this->dataHelper->getMediaUrl();
                 $iconImage = $mediaUrl.'fileicon/tmp/icon/'.$iconExt;
             } else {
                 $iconImage = $this->getViewFileUrl('Prince_Productattach::images/'.$fileExt.'.png');
-            }
+            } 
         } else {
             $iconImage = $this->getViewFileUrl('Prince_Productattach::images/unknown.png');
         }
